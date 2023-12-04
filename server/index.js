@@ -2,9 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
-const { restart } = require("nodemon");
 
-/* middleware */
+/* middlewares */
 
 // This middleware enables Cross-Origin Resource Sharing (CORS) for your Express application.
 app.use(cors());
