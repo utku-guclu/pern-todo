@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import "./App.css";
 
+import { Box } from "@mui/material";
+
 import { getJoke } from "./api/ai";
+
+import InputTodo from "./components/InputTodo";
 
 function App() {
     const [greet, setGreet] = useState("");
@@ -14,7 +18,14 @@ function App() {
         fetchData();
     }, []);
 
-    return <>{greet || "Welcome!"}</>;
+    return (
+        <Fragment>
+            <Box>{greet || "Welcome!"}</Box>
+            <Box>
+                <InputTodo />
+            </Box>
+        </Fragment>
+    );
 }
 
 export default App;
