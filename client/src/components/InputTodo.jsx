@@ -1,9 +1,10 @@
 import { styled, useTheme, createTheme, ThemeProvider } from "@mui/system";
+import { useState } from "react";
 
 const customTheme = createTheme({
     palette: {
         primary: {
-            main: "#1976D2",
+            main: "#50914a",
             dark: "#004080",
         },
         secondary: {
@@ -14,25 +15,16 @@ const customTheme = createTheme({
 });
 
 const MyInputTodo = styled("div")(({ theme }) => ({
-    width: "100%", // Default width for all screen sizes
-    height: "400px",
+    maxWidth: "100%",
     color: "darkslategray",
     border: "2px solid #eee",
     borderRadius: 12,
     padding: "1em",
     fontFamily: "cursive, Arial",
 
-    [theme.breakpoints.up("sm")]: {
-        maxWidth: "80%",
-    },
-
-    [theme.breakpoints.up("md")]: {
-        maxWidth: "100%",
-    },
-
-    [theme.breakpoints.up("lg")]: {
-        maxWidth: "100%", // Adjusted width for screens equal to or larger than 'lg'
-    },
+    // [theme.breakpoints.up("sm")]: {
+    //     maxWidth: "100%",
+    // },
 }));
 
 const MyHeader = styled("h1")({});
@@ -57,6 +49,7 @@ const MyButton = styled("button")(({ theme }) => ({
     color: "white",
     padding: "10px 20px",
     border: "none",
+    borderRadius: 0,
     cursor: "pointer",
     transition: "background-color 0.3s ease",
 
@@ -66,14 +59,43 @@ const MyButton = styled("button")(({ theme }) => ({
 }));
 
 const InputTodo = () => {
+    const [description, setDescription] = useState("");
+
+    const handleDescription = (e) => {
+        setDescription(e.target.value);
+    };
+
+    const onSubmitForm = async (e) => {
+        e.preventDefault();
+        try {
+            const body = { description };
+            const response = await fetch("http://localhost:5000/todos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
+
+            setDescription("");
+            window.location = "/";
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const theme = useTheme();
     return (
         <ThemeProvider theme={customTheme}>
             <MyInputTodo>
                 <MyHeader />
-                <MyForm>
-                    <MyInput placeholder="todo" type="text" theme={theme} />
-                    <MyButton>Add</MyButton>
+                <MyForm onSubmit={onSubmitForm}>
+                    <MyInput
+                        placeholder="todo"
+                        type="text"
+                        theme={theme}
+                        value={description}
+                        onChange={handleDescription}
+                    />
+                    <MyButton disabled={!description}>Add</MyButton>
                 </MyForm>
             </MyInputTodo>
         </ThemeProvider>

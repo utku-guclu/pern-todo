@@ -48,20 +48,43 @@ app.get("/todos/:id", async (req, res) => {
     } catch (error) {}
 });
 
-// update a todo
+// update a todo description
 app.put("/todos/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { description } = req.body;
-        const updateTodo = await pool.query(
-            "UPDATE todo SET description = $1 WHERE todo_id = $2",
-            [description, id]
-        );
-        res.json("todo's updated!");
+        const { description, isCrossedOut } = req.body;
+        if (description) {
+            const updateTodo = await pool.query(
+                "UPDATE todo SET description = $1 WHERE todo_id = $2",
+                [description, id]
+            );
+        }
+        if (isCrossedOut) {
+            const updateTodo = await pool.query(
+                "UPDATE todo SET is_crossed_out = $1 WHERE todo_id = $2",
+                [isCrossedOut, id]
+            );
+        }
+        res.json("todo's description updated!");
     } catch (error) {
         console.log(error);
     }
 });
+
+// update a todo status
+// app.put("/todos/:id", async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const { isCrossedOut } = req.body;
+//         const updateTodo = await pool.query(
+//             "UPDATE todo SET is_crossed_out = $1 WHERE todo_id = $2",
+//             [isCrossedOut, id]
+//         );
+//         res.json("todo's status updated!");
+//     } catch (error) {
+//         console.log(error);
+//     }
+// });
 
 // delete a todo
 app.delete("/todos/:id", async (req, res) => {
